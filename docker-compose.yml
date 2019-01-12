@@ -1,19 +1,30 @@
-version: "3.1"
+version: "2.1"
 services:
   postgres:
     image: postgres:11.1-alpine
     restart: always
     volumes:
      - .:/data
+    environment:
+      - POSTGRES_DB=kudos
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
   api:
-    build: ./
+    build: .
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - .:/usr/local/api
+      - /usr/local/api/node_modules
     environment:
+      - NODE_ENV=development
+      - PORT=8000
       - DB_HOST=postgres
-      - DB_NAME=postgres
       - DB_USER=postgres
+      - DB_NAME=kudos

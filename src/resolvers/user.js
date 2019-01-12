@@ -2,22 +2,24 @@ import uuidv4 from 'uuid/v4'
 
 export default {
   Query: {
-    me: (parent, args, { me }) => {
-      return me
+    users: async (parent, args, { models }) => {
+      return await models.User.findAll()
     },
-    users: (parent, args, { models }) => {
-      return Object.values(models.users)
+    user: async (parent, { id }, { models }) => {
+      return await models.User.findByPk(id)
     },
-    user: (parent, { id }, { models }) => {
-      return models.users[id]
+    me: async (parent, args, { models, me }) => {
+      return await models.User.findByPk(me.id)
     }
   },
 
   User: {
-    messages: (user, args, { models }) => {
-      return Object.values(models.messages).filter(
-        message => message.userId === user.id
-      )
+    messages: async (user, args, { models }) => {
+      return await models.Message.findAll({
+        where: {
+          userId: user.id
+        }
+      })
     }
   }
 }
