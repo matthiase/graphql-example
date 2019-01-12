@@ -1,5 +1,3 @@
-import uuidv4 from 'uuid/v4'
-
 export default {
   Query: {
     users: async (parent, args, { models }) => {
@@ -9,6 +7,7 @@ export default {
       return await models.User.findByPk(id)
     },
     me: async (parent, args, { models, me }) => {
+      if (!me) { return null }
       return await models.User.findByPk(me.id)
     }
   },

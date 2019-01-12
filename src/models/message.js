@@ -1,7 +1,14 @@
 const message = (sequelize, DataTypes) => {
   const Message = sequelize.define('message', {
     text: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Message text must not be empty.'
+        }
+      }
     }
   })
 
